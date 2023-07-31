@@ -47,6 +47,26 @@ const createArtist = [
   }),
 ];
 
+const updateArtist = [
+  body('name').trim().isLength({ min: 1 }).escape(),
+  asyncHandler(async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.status(400);
+
+      throw new Error('Invalid name');
+    }
+
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const artist = await Artist.findByIdAndUpdate(id, { name });
+
+    res.status(201).json({ artist });
+  }),
+];
+
 const deleteArtist = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -63,4 +83,10 @@ const deleteArtist = asyncHandler(async (req: Request, res: Response) => {
   res.status(201).json({ artist, allAlbums, allTracks });
 });
 
-export { getAllArtists, createArtist, getSingleArtist, deleteArtist };
+export {
+  getAllArtists,
+  getSingleArtist,
+  createArtist,
+  updateArtist,
+  deleteArtist,
+};

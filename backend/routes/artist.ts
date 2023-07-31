@@ -4,12 +4,19 @@ import {
   deleteArtist,
   getAllArtists,
   getSingleArtist,
+  updateArtist,
 } from '../controllers/artistController';
 
 const router = express.Router();
 
-router.route('/').get(getAllArtists).post(createArtist);
+router.route('/')
+  .get(getAllArtists)
+  .post(createArtist);
 
-router.route('/:id').get(getSingleArtist).delete(deleteArtist);
+router
+  .route('/:id')
+  .get(getSingleArtist)
+  .patch(updateArtist)
+  .delete(deleteArtist);
 
 export default router;

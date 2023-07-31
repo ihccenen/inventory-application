@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import connectDB from './config/db';
 import { errorHandler, notFound } from './middleware/errorMiddleware';
+import artistRouter from './routes/artist';
 
 const port = process.env.PORT || 3000;
 
@@ -18,6 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(cookieParser());
 app.use(morgan('dev'));
+
+app.use('/artist', artistRouter);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -77,8 +77,8 @@ const deleteArtist = asyncHandler(async (req: Request, res: Response) => {
     throw new Error('Resource not found');
   }
 
-  const allAlbums = await Album.deleteMany({ author: id });
-  const allTracks = await Track.deleteMany({ author: id });
+  const allAlbums = await Album.deleteMany({ artist: id });
+  const allTracks = await Track.deleteMany({ artist: id });
 
   res.status(201).json({ artist, allAlbums, allTracks });
 });

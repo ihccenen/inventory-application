@@ -12,25 +12,27 @@ const getAllATrack = asyncHandler(async (req: Request, res: Response) => {
 const getSingleTrack = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const track = await Track.findById(id);
+  const track = await Track.findById(id)
+    .populate('artist')
+    .populate('album')
+    .populate('genre');
 
   if (!track) {
     res.status(404);
     throw new Error('Resource not found');
   }
 
-  res.status(200).json({ track });
+  res.status(200).json({
+    title: track.title,
+    artist: track.artist,
+    album: track.album,
+    genre: track.genre,
+  });
 });
 
 const createTrack = [
-  body('title')
-    .trim()
-    .isLength({ min: 1 })
-    .escape(),
-  body('artist')
-    .trim()
-    .isLength({ min: 1 })
-    .escape(),
+  body('title').trim().isLength({ min: 1 }).escape(),
+  body('artist').trim().isLength({ min: 1 }).escape(),
   body('album')
     .trim()
     .isLength({ min: 1 })
@@ -39,14 +41,15 @@ const createTrack = [
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
-    const { title, artist, album } = req.body;
+    const { title, artist, album, genre } = req.body;
 
     const track = new Track({
       title,
       artist,
       album,
+      genre,
     });
-
+    console.log(track);
     if (!errors.isEmpty()) {
       res.status(400);
 
@@ -60,17 +63,9 @@ const createTrack = [
 ];
 
 const updateTrack = [
-  body('title')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .optional({ values: 'falsy' }),
+  body('title').trim().isLength({ min: 1 }).escape(),
+  body('artist').trim().isLength({ min: 1 }).escape(),
   body('album')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .optional({ values: 'falsy' }),
-  body('artist')
     .trim()
     .isLength({ min: 1 })
     .escape()
@@ -85,16 +80,20 @@ const updateTrack = [
     }
 
     const { id } = req.params;
-    const oldTrack = await Track.findById(id);
-    const title = req.body.title || oldTrack?.title;
-    const artist = req.body.artist || oldTrack?.artist.toString();
-    const album = req.body.album || oldTrack?.album?.toString();
+    const title = req.body.title;
+    const artist = req.body.artist;
+    const album = req.body.album;
+    const genre = req.body.genre;
 
-    const track = await Track.findByIdAndUpdate(id, {
-      title,
-      artist,
-      album,
-    });
+    const track = await Track.replaceOne(
+      { _id: id },
+      {
+        title,
+        artist,
+        album,
+        genre,
+      }
+    );
 
     res.status(201).json({ track });
   }),

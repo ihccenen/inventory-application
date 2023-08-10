@@ -14,14 +14,18 @@ const getAllArtists = asyncHandler(async (req: Request, res: Response) => {
 const getSingleArtist = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const artist = await Artist.findById(id);
+  const [artist, albums, tracks] = await Promise.all([
+    Artist.findById(id),
+    Album.find({ artist: id }),
+    Track.find({ artist: id }),
+  ]);
 
   if (!artist) {
     res.status(404);
     throw new Error('Resource not found');
   }
 
-  res.status(200).json({ artist });
+  res.status(200).json({ name: artist.name, albums, tracks });
 });
 
 const createArtist = [

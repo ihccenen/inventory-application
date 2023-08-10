@@ -13,33 +13,36 @@ const getAllAlbums = asyncHandler(async (req: Request, res: Response) => {
 const getSingleAlbum = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const album = await Album.findById(id);
+  const [album, tracks] = await Promise.all([
+    Album.findById(id).populate('artist').populate('genre'),
+    Track.find({ album: id }),
+  ]);
 
   if (!album) {
     res.status(404);
     throw new Error('Resource not found');
   }
 
-  res.status(200).json({ album });
+  res.status(200).json({
+    title: album.title,
+    artist: album.artist,
+    genre: album.genre,
+    tracks,
+  });
 });
 
 const createAlbum = [
-  body('title')
-    .trim()
-    .isLength({ min: 1 })
-    .escape(),
-  body('artist')
-    .trim()
-    .isLength({ min: 1 })
-    .escape(),
+  body('title').trim().isLength({ min: 1 }).escape(),
+  body('artist').trim().isLength({ min: 1 }).escape(),
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
-    const { artist, title } = req.body;
+    const { artist, title, genre } = req.body;
 
     const album = new Album({
       artist,
       title,
+      genre,
     });
 
     if (!errors.isEmpty()) {
@@ -55,16 +58,13 @@ const createAlbum = [
 ];
 
 const updateAlbum = [
-  body('title')
-  .trim()
-  .isLength({ min: 1 })
-  .escape()
-  .optional({values: 'falsy' }),
-  body('artist')
+  body('title').trim().isLength({ min: 1 }).escape(),
+  body('artist').trim().isLength({ min: 1 }).escape(),
+  body('genre')
     .trim()
     .isLength({ min: 1 })
     .escape()
-    .optional({values: 'falsy' }),
+    .optional({ values: 'falsy' }),
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
 
@@ -75,12 +75,18 @@ const updateAlbum = [
     }
 
     const { id } = req.params;
-    const oldAlbum = await Album.findById(id);
-    const title = req.body.title || oldAlbum?.title
-    const artist = req.body.artist || oldAlbum?.artist.toString()
-    
+    const title = req.body.title;
+    const artist = req.body.artist;
+    const genre = req.body.genre;
 
-    const album = await Album.findByIdAndUpdate(id, { title, artist });
+    const album = await Album.replaceOne(
+      { _id: id },
+      {
+        title,
+        artist,
+        genre,
+      }
+    );
 
     res.status(201).json({ album });
   }),
@@ -101,10 +107,4 @@ const deleteAlbum = asyncHandler(async (req: Request, res: Response) => {
   res.status(201).json({ album, allTracks });
 });
 
-export {
-  getAllAlbums,
-  getSingleAlbum,
-  createAlbum,
-  updateAlbum,
-  deleteAlbum,
-};
+export { getAllAlbums, getSingleAlbum, createAlbum, updateAlbum, deleteAlbum };

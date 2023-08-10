@@ -13,8 +13,7 @@ router.route('/')
   .get(getAllAlbums)
   .post(createAlbum);
 
-router
-  .route('/:id')
+router.route('/:id')
   .get(getSingleAlbum)
   .patch(updateAlbum)
   .delete(deleteAlbum);

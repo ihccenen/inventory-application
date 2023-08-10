@@ -1,5 +1,7 @@
-import styles from './page.module.css';
-
 export default function Home() {
-  return <main className={styles.main}></main>;
+  return (
+    <main>
+      <h1>Inventory App</h1>
+    </main>
+  );
 }

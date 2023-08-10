@@ -1,0 +1,126 @@
+:root {
+  --d-magenta: hsl(300, 100%, 25%);
+  --l-g-violet: hsl(264, 77%, 95%);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+}
+
+a {
+  color: var(--d-magenta);
+  text-decoration: none;
+}
+
+a:hover {
+  color: inherit;
+  text-decoration: underline;
+}
+
+li {
+  list-style: none;
+}
+
+select {
+  padding: 0.5em 1em;
+}
+
+.content {
+  padding: 3em;
+}
+
+.aside {
+  font-size: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 2em;
+  background-color: var(--l-g-violet);
+}
+
+.aside-links {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.aside li {
+  margin-top: 0.5em;
+}
+
+.main {
+  display: grid;
+  gap: 2.5em;
+}
+
+.items-list {
+  font-size: 1.5em;
+  display: grid;
+  gap: 1rem;
+  padding: 1em 2em;
+}
+
+.delete-btn {
+  font-size: 1.3rem;
+  padding: 1em 3em;
+  margin-top: 0.5em;
+  background-color: tomato;
+  border: none;
+  border-radius: 0.4em;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  opacity: 0.9;
+}
+
+.form {
+  display: grid;
+  font-size: 1.5rem;
+  gap: 2rem;
+  padding: 1em;
+  margin-inline: auto;
+}
+
+.label {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.input,
+.submit-btn {
+  font-size: inherit;
+  font-family: inherit;
+  border: none;
+  border-radius: 1em;
+  padding: 0.4em 1em;
+  max-width: 30rem;
+}
+
+.input {
+  background-color: aqua;
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 0.5em 1em;
+}
+
+.select,
+.fieldset label {
+  display: flex;
+  gap: 1em;
+}
+
+.submit-btn {
+  background-color: greenyellow;
+  cursor: pointer;
+}

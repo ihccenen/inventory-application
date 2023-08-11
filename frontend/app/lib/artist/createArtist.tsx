@@ -1,5 +1,5 @@
 export default async function createArtist(name: string) {
-  const artist = await fetch('http://localhost:5000/artist', {
+  const artist = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/artist`, {
     method: 'POST',
     body: JSON.stringify({ name }),
     headers: { 'Content-Type': 'application/json' },

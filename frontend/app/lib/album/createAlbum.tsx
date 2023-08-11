@@ -3,7 +3,7 @@ export default async function createAlbum(
   artist: string,
   genre: string[]
 ) {
-  const album = await fetch('http://localhost:5000/album', {
+  const album = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/album`, {
     method: 'POST',
     body: JSON.stringify({ title, artist, genre }),
     headers: { 'Content-Type': 'application/json' },

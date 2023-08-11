@@ -1,5 +1,5 @@
 export default async function createGenre(name: string) {
-  const genre = await fetch('http://localhost:5000/genre/', {
+  const genre = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/genre/`, {
     method: 'POST',
     body: JSON.stringify({ name }),
     headers: { 'Content-Type': 'application/json' },

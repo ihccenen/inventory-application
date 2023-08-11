@@ -5,16 +5,19 @@ export default async function updateTrack(
   album: string,
   genre: string[]
 ) {
-  const track = await fetch(`http://localhost:5000/track/${trackId}`, {
-    method: 'PATCH',
-    body: JSON.stringify({
-      title,
-      artist,
-      album,
-      genre,
-    }),
-    headers: { 'Content-Type': 'application/json' },
-  });
+  const track = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/track/${trackId}`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({
+        title,
+        artist,
+        album,
+        genre,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
 
   console.log(track);
 

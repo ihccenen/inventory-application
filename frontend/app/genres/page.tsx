@@ -20,15 +20,15 @@ export default function Genre() {
 
   return (
     <main>
-      <h1>Genres:</h1>
       {loading ? (
-        <h2>Loading...</h2>
+        <h1>Loading...</h1>
       ) : (
         <>
           {genres == null ? (
-            <h2>error</h2>
+            <h1>error</h1>
           ) : (
             <>
+              <h1>Genres:</h1>
               <ul className="items-list">
                 {genres.length < 1 ? (
                   <p>There is no artist in the database.</p>

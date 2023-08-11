@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import getAllArtists from '../lib/artist/getAllArtists';
-import getAlbumsByArtist from '../lib/album/getAlbumsByArtist';
 import getAllGenres from '../lib/genre/getAllGenres';
+import getAllAlbums from '../lib/album/getAllAlbums';
 
 type TrackFormProps = {
   titleValue: string;
@@ -39,16 +39,12 @@ export default function TrackForm({
       ]
     | null
   >(null);
-  const [allAlbums, setAllAlbums] = useState<{
-    albums: [{ title: string; _id: string }];
-  } | null>(null);
+  const [allAlbums, setAllAlbums] = useState<
+    [{ title: string; _id: string; artist: string }] | []
+  >([]);
   const [allGenre, setAllGenre] = useState<
     [{ name: string; _id: string }] | null
   >(null);
-
-  if (allAlbums != null && artistValue == '') {
-    setAllAlbums(null);
-  }
 
   useEffect(() => {
     getAllArtists()
@@ -57,13 +53,16 @@ export default function TrackForm({
         setError(err.message);
       });
 
-    if (artistValue != '') {
-      getAlbumsByArtist(artistValue)
-        .then(setAllAlbums)
-        .catch((err) => {
-          setError(err.message);
-        });
-    }
+    getAllAlbums()
+      .then((res) => {
+        const albums = res.filter(
+          (album: { title: string; _id: string; artist: string }) =>
+            album.artist === artistValue
+        );
+
+        setAllAlbums(albums);
+      })
+      .catch((err) => setError(err.message));
 
     getAllGenres()
       .then(setAllGenre)
@@ -107,7 +106,7 @@ export default function TrackForm({
             )}
           </select>
         </label>
-        {artistValue != '' && allAlbums && allAlbums.albums.length > 0 && (
+        {allAlbums.length > 0 && (
           <label className="select" htmlFor="album">
             Album (optional):
             <select
@@ -117,7 +116,7 @@ export default function TrackForm({
               onChange={handleAlbumChange}
             >
               <option value={''}>Select album</option>
-              {allAlbums.albums.map(({ title, _id }) => (
+              {allAlbums.map(({ title, _id }) => (
                 <option key={_id} value={_id}>
                   {title}
                 </option>
